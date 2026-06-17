@@ -125,12 +125,12 @@ public class CardService {
 			int rightStreak = card.getRightStreak() + 1;
 			card.setRightStreak(rightStreak);
 			card.setWrongStreak(0);
-			applySchedule(card, DifficultyLevelENUM.HARD, ScheduledIntervalENUM.DAYS_1);
 		} else {
 			card.setRightStreak(0);
 			card.setWrongStreak(card.getWrongStreak() + 1);
-			applySchedule(card, DifficultyLevelENUM.HARD, ScheduledIntervalENUM.HOURS_2);
 		}
+		ScheduleTransition transition = transitionForAnswer(card.getDifficultyLevel(), request.correct());
+		applySchedule(card, transition.difficulty(), transition.interval());
 		Card saved = cardRepository.save(card);
 		studyReviewService.registerReview(saved, request.correct() ? ReviewResultENUM.CORRECT : ReviewResultENUM.WRONG);
 		return toResponse(saved);
@@ -185,15 +185,38 @@ public class CardService {
 	private record DueOffset(long amount, ChronoUnit unit) {
 	}
 
+	private record ScheduleTransition(DifficultyLevelENUM difficulty, ScheduledIntervalENUM interval) {
+	}
+
 	private DueOffset dueOffset(ScheduledIntervalENUM interval) {
 		return switch (interval) {
 			case HOURS_2 -> new DueOffset(2, ChronoUnit.HOURS);
+			case HOURS_4 -> new DueOffset(4, ChronoUnit.HOURS);
+			case HOURS_36 -> new DueOffset(36, ChronoUnit.HOURS);
 			case DAYS_1 -> new DueOffset(1, ChronoUnit.DAYS);
 			case DAYS_2 -> new DueOffset(2, ChronoUnit.DAYS);
 			case DAYS_3 -> new DueOffset(3, ChronoUnit.DAYS);
 			case DAYS_5 -> new DueOffset(5, ChronoUnit.DAYS);
 			case DAYS_7 -> new DueOffset(7, ChronoUnit.DAYS);
 			case DAYS_9 -> new DueOffset(9, ChronoUnit.DAYS);
+		};
+	}
+
+	private ScheduleTransition transitionForAnswer(DifficultyLevelENUM currentDifficulty, boolean correct) {
+		DifficultyLevelENUM difficulty = currentDifficulty == null ? DifficultyLevelENUM.NONE : currentDifficulty;
+		return switch (difficulty) {
+			case NONE -> correct
+					? new ScheduleTransition(DifficultyLevelENUM.MEDIUM, ScheduledIntervalENUM.HOURS_4)
+					: new ScheduleTransition(DifficultyLevelENUM.HARD, ScheduledIntervalENUM.HOURS_2);
+			case MEDIUM -> correct
+					? new ScheduleTransition(DifficultyLevelENUM.EASY, ScheduledIntervalENUM.HOURS_36)
+					: new ScheduleTransition(DifficultyLevelENUM.HARD, ScheduledIntervalENUM.HOURS_2);
+			case HARD -> correct
+					? new ScheduleTransition(DifficultyLevelENUM.MEDIUM, ScheduledIntervalENUM.HOURS_4)
+					: new ScheduleTransition(DifficultyLevelENUM.HARD, ScheduledIntervalENUM.HOURS_2);
+			case EASY -> correct
+					? new ScheduleTransition(DifficultyLevelENUM.EASY, ScheduledIntervalENUM.HOURS_36)
+					: new ScheduleTransition(DifficultyLevelENUM.MEDIUM, ScheduledIntervalENUM.HOURS_4);
 		};
 	}
 

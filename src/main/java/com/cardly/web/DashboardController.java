@@ -58,7 +58,8 @@ public class DashboardController {
 	@GetMapping("/calendar")
 	public StudyCalendarResponse getStudyCalendar(
 			@AuthenticationPrincipal UserPrincipal principal,
-			@RequestParam(defaultValue = "120") int limit) {
-		return new StudyCalendarResponse(studyReviewService.listStudyDays(principal.getId(), limit));
+			@RequestParam(defaultValue = "120") int limit,
+			@RequestParam(required = false) Integer timezoneOffsetMinutes) {
+		return new StudyCalendarResponse(studyReviewService.listStudyDays(principal.getId(), limit, timezoneOffsetMinutes));
 	}
 }

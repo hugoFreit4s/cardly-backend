@@ -16,6 +16,9 @@ import java.util.List;
 @Service
 public class StudyReviewService {
 
+	private static final int MIN_TIMEZONE_OFFSET_MINUTES = -14 * 60;
+	private static final int MAX_TIMEZONE_OFFSET_MINUTES = 14 * 60;
+
 	private final StudyReviewEventRepository studyReviewEventRepository;
 	private final UserRepository userRepository;
 
@@ -36,17 +39,26 @@ public class StudyReviewService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<String> listStudyDays(Integer userId, int limit) {
+	public List<String> listStudyDays(Integer userId, int limit, Integer timezoneOffsetMinutes) {
 		int safeLimit = Math.max(1, Math.min(limit, 365));
+		ZoneOffset zoneOffset = resolveZoneOffset(timezoneOffsetMinutes);
 		LinkedHashSet<String> uniqueDays = new LinkedHashSet<>();
 		List<StudyReviewEvent> events = studyReviewEventRepository.findByUser_IdAndDeletedAtIsNullOrderByCreatedAtDesc(userId);
 		for (StudyReviewEvent event : events) {
-			String day = event.getCreatedAt().atZone(ZoneOffset.UTC).toLocalDate().toString();
+			String day = event.getCreatedAt().atOffset(zoneOffset).toLocalDate().toString();
 			uniqueDays.add(day);
 			if (uniqueDays.size() >= safeLimit) {
 				break;
 			}
 		}
 		return List.copyOf(uniqueDays);
+	}
+
+	private ZoneOffset resolveZoneOffset(Integer timezoneOffsetMinutes) {
+		int safeOffsetMinutes = timezoneOffsetMinutes == null
+				? 0
+				: Math.max(MIN_TIMEZONE_OFFSET_MINUTES, Math.min(MAX_TIMEZONE_OFFSET_MINUTES, timezoneOffsetMinutes));
+		// JS getTimezoneOffset uses opposite sign from UTC offsets: UTC-3 => +180.
+		return ZoneOffset.ofTotalSeconds(-safeOffsetMinutes * 60);
 	}
 }
