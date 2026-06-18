@@ -1,5 +1,6 @@
 package com.cardly.service;
 
+import com.cardly.domain.Card;
 import com.cardly.domain.Deck;
 import com.cardly.domain.User;
 import com.cardly.repository.CardRepository;
@@ -96,5 +97,28 @@ class DeckServiceTest {
 		assertThat(response.content()).hasSize(1);
 		assertThat(response.content().get(0).alreadyCloned()).isFalse();
 		assertThat(response.content().get(0).clonedDeckId()).isNull();
+	}
+
+	@Test
+	void softDeleteDeckSetsDeletedAtOnManagedDeckAndCards() {
+		Deck detached = new Deck();
+		detached.setId(10);
+
+		Deck managed = new Deck();
+		managed.setId(10);
+		managed.setDeletedAt(null);
+
+		Card card = new Card();
+		card.setId(100);
+		card.setDeck(managed);
+
+		when(deckRepository.findById(10)).thenReturn(Optional.of(managed));
+		when(cardRepository.findByDeck_IdAndDeletedAtIsNull(10)).thenReturn(List.of(card));
+
+		deckService.softDeleteDeck(detached);
+
+		assertThat(managed.getDeletedAt()).isNotNull();
+		assertThat(card.getDeletedAt()).isEqualTo(managed.getDeletedAt());
+		verify(deckRepository).findById(10);
 	}
 }

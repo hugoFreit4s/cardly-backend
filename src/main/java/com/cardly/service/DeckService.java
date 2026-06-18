@@ -144,12 +144,14 @@ public class DeckService {
 
 	@Transactional
 	public void softDeleteDeck(Deck deck) {
-		if (deck.getDeletedAt() != null) {
+		Deck managed = deckRepository.findById(deck.getId())
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+		if (managed.getDeletedAt() != null) {
 			return;
 		}
 		Instant now = Instant.now();
-		deck.setDeletedAt(now);
-		List<Card> cards = cardRepository.findByDeck_IdAndDeletedAtIsNull(deck.getId());
+		managed.setDeletedAt(now);
+		List<Card> cards = cardRepository.findByDeck_IdAndDeletedAtIsNull(managed.getId());
 		for (Card card : cards) {
 			card.setDeletedAt(now);
 		}
