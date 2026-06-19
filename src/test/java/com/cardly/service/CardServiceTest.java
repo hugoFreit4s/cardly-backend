@@ -83,7 +83,7 @@ class CardServiceTest {
 	}
 
 	@Test
-	void answerCardWrongFromNoneSchedulesHardForTwoHours() {
+	void answerCardWrongFromNoneSchedulesHardForFourHours() {
 		Deck deck = new Deck();
 		deck.setId(5);
 		Card card = createCard(1, deck, "Q", "A");
@@ -94,15 +94,15 @@ class CardServiceTest {
 		Instant after = Instant.now();
 
 		assertThat(response.difficultyLevel()).isEqualTo(DifficultyLevelENUM.HARD);
-		assertThat(response.scheduledInterval()).isEqualTo(ScheduledIntervalENUM.HOURS_2);
-		assertThat(response.dueAt()).isAfterOrEqualTo(before.plus(2, ChronoUnit.HOURS));
-		assertThat(response.dueAt()).isBeforeOrEqualTo(after.plus(3, ChronoUnit.HOURS));
+		assertThat(response.scheduledInterval()).isEqualTo(ScheduledIntervalENUM.HOURS_4);
+		assertThat(response.dueAt()).isAfterOrEqualTo(before.plus(4, ChronoUnit.HOURS));
+		assertThat(response.dueAt()).isBeforeOrEqualTo(after.plus(5, ChronoUnit.HOURS));
 		assertThat(card.getWrongStreak()).isEqualTo(1);
 		assertThat(card.getRightStreak()).isZero();
 	}
 
 	@Test
-	void answerCardCorrectFromNoneSchedulesMediumForFourHours() {
+	void answerCardCorrectFromNoneSchedulesMediumForTwoHours() {
 		Deck deck = new Deck();
 		deck.setId(5);
 		Card card = createCard(1, deck, "Q", "A");
@@ -113,9 +113,9 @@ class CardServiceTest {
 		Instant after = Instant.now();
 
 		assertThat(response.difficultyLevel()).isEqualTo(DifficultyLevelENUM.MEDIUM);
-		assertThat(response.scheduledInterval()).isEqualTo(ScheduledIntervalENUM.HOURS_4);
-		assertThat(response.dueAt()).isAfterOrEqualTo(before.plus(4, ChronoUnit.HOURS));
-		assertThat(response.dueAt()).isBeforeOrEqualTo(after.plus(5, ChronoUnit.HOURS));
+		assertThat(response.scheduledInterval()).isEqualTo(ScheduledIntervalENUM.HOURS_2);
+		assertThat(response.dueAt()).isAfterOrEqualTo(before.plus(2, ChronoUnit.HOURS));
+		assertThat(response.dueAt()).isBeforeOrEqualTo(after.plus(3, ChronoUnit.HOURS));
 		assertThat(card.getRightStreak()).isEqualTo(1);
 		assertThat(card.getWrongStreak()).isZero();
 	}
@@ -139,7 +139,7 @@ class CardServiceTest {
 	}
 
 	@Test
-	void answerCardWrongFromMediumSchedulesHardForTwoHours() {
+	void answerCardWrongFromMediumSchedulesHardForFourHours() {
 		Deck deck = new Deck();
 		deck.setId(5);
 		Card card = createCard(1, deck, "Q", "A");
@@ -151,13 +151,13 @@ class CardServiceTest {
 		Instant after = Instant.now();
 
 		assertThat(response.difficultyLevel()).isEqualTo(DifficultyLevelENUM.HARD);
-		assertThat(response.scheduledInterval()).isEqualTo(ScheduledIntervalENUM.HOURS_2);
-		assertThat(response.dueAt()).isAfterOrEqualTo(before.plus(2, ChronoUnit.HOURS));
-		assertThat(response.dueAt()).isBeforeOrEqualTo(after.plus(3, ChronoUnit.HOURS));
+		assertThat(response.scheduledInterval()).isEqualTo(ScheduledIntervalENUM.HOURS_4);
+		assertThat(response.dueAt()).isAfterOrEqualTo(before.plus(4, ChronoUnit.HOURS));
+		assertThat(response.dueAt()).isBeforeOrEqualTo(after.plus(5, ChronoUnit.HOURS));
 	}
 
 	@Test
-	void answerCardCorrectFromHardSchedulesMediumForFourHours() {
+	void answerCardCorrectFromHardSchedulesMediumForTwoHours() {
 		Deck deck = new Deck();
 		deck.setId(5);
 		Card card = createCard(1, deck, "Q", "A");
@@ -169,13 +169,13 @@ class CardServiceTest {
 		Instant after = Instant.now();
 
 		assertThat(response.difficultyLevel()).isEqualTo(DifficultyLevelENUM.MEDIUM);
-		assertThat(response.scheduledInterval()).isEqualTo(ScheduledIntervalENUM.HOURS_4);
-		assertThat(response.dueAt()).isAfterOrEqualTo(before.plus(4, ChronoUnit.HOURS));
-		assertThat(response.dueAt()).isBeforeOrEqualTo(after.plus(5, ChronoUnit.HOURS));
+		assertThat(response.scheduledInterval()).isEqualTo(ScheduledIntervalENUM.HOURS_2);
+		assertThat(response.dueAt()).isAfterOrEqualTo(before.plus(2, ChronoUnit.HOURS));
+		assertThat(response.dueAt()).isBeforeOrEqualTo(after.plus(3, ChronoUnit.HOURS));
 	}
 
 	@Test
-	void answerCardWrongFromHardKeepsHardForTwoHours() {
+	void answerCardWrongFromHardKeepsHardForFourHours() {
 		Deck deck = new Deck();
 		deck.setId(5);
 		Card card = createCard(1, deck, "Q", "A");
@@ -187,9 +187,9 @@ class CardServiceTest {
 		Instant after = Instant.now();
 
 		assertThat(response.difficultyLevel()).isEqualTo(DifficultyLevelENUM.HARD);
-		assertThat(response.scheduledInterval()).isEqualTo(ScheduledIntervalENUM.HOURS_2);
-		assertThat(response.dueAt()).isAfterOrEqualTo(before.plus(2, ChronoUnit.HOURS));
-		assertThat(response.dueAt()).isBeforeOrEqualTo(after.plus(3, ChronoUnit.HOURS));
+		assertThat(response.scheduledInterval()).isEqualTo(ScheduledIntervalENUM.HOURS_4);
+		assertThat(response.dueAt()).isAfterOrEqualTo(before.plus(4, ChronoUnit.HOURS));
+		assertThat(response.dueAt()).isBeforeOrEqualTo(after.plus(5, ChronoUnit.HOURS));
 	}
 
 	@Test
@@ -211,7 +211,7 @@ class CardServiceTest {
 	}
 
 	@Test
-	void answerCardWrongFromEasySchedulesMediumForFourHours() {
+	void answerCardWrongFromEasySchedulesMediumForTwoHours() {
 		Deck deck = new Deck();
 		deck.setId(5);
 		Card card = createCard(1, deck, "Q", "A");
@@ -223,9 +223,9 @@ class CardServiceTest {
 		Instant after = Instant.now();
 
 		assertThat(response.difficultyLevel()).isEqualTo(DifficultyLevelENUM.MEDIUM);
-		assertThat(response.scheduledInterval()).isEqualTo(ScheduledIntervalENUM.HOURS_4);
-		assertThat(response.dueAt()).isAfterOrEqualTo(before.plus(4, ChronoUnit.HOURS));
-		assertThat(response.dueAt()).isBeforeOrEqualTo(after.plus(5, ChronoUnit.HOURS));
+		assertThat(response.scheduledInterval()).isEqualTo(ScheduledIntervalENUM.HOURS_2);
+		assertThat(response.dueAt()).isAfterOrEqualTo(before.plus(2, ChronoUnit.HOURS));
+		assertThat(response.dueAt()).isBeforeOrEqualTo(after.plus(3, ChronoUnit.HOURS));
 	}
 
 	@Test
@@ -239,7 +239,7 @@ class CardServiceTest {
 		CardResponse response = cardService.answerCard(card, new AnswerCardRequest(true));
 
 		assertThat(response.difficultyLevel()).isEqualTo(DifficultyLevelENUM.MEDIUM);
-		assertThat(response.scheduledInterval()).isEqualTo(ScheduledIntervalENUM.HOURS_4);
+		assertThat(response.scheduledInterval()).isEqualTo(ScheduledIntervalENUM.HOURS_2);
 		assertThat(card.getRightStreak()).isEqualTo(2);
 		assertThat(card.getWrongStreak()).isZero();
 	}

@@ -210,17 +210,17 @@ public class CardService {
 		DifficultyLevelENUM difficulty = currentDifficulty == null ? DifficultyLevelENUM.NONE : currentDifficulty;
 		return switch (difficulty) {
 			case NONE -> correct
-					? new ScheduleTransition(DifficultyLevelENUM.MEDIUM, ScheduledIntervalENUM.HOURS_4)
-					: new ScheduleTransition(DifficultyLevelENUM.HARD, ScheduledIntervalENUM.HOURS_2);
+					? new ScheduleTransition(DifficultyLevelENUM.MEDIUM, ScheduledIntervalENUM.HOURS_2)
+					: new ScheduleTransition(DifficultyLevelENUM.HARD, ScheduledIntervalENUM.HOURS_4);
 			case MEDIUM -> correct
 					? new ScheduleTransition(DifficultyLevelENUM.EASY, ScheduledIntervalENUM.HOURS_36)
-					: new ScheduleTransition(DifficultyLevelENUM.HARD, ScheduledIntervalENUM.HOURS_2);
+					: new ScheduleTransition(DifficultyLevelENUM.HARD, ScheduledIntervalENUM.HOURS_4);
 			case HARD -> correct
-					? new ScheduleTransition(DifficultyLevelENUM.MEDIUM, ScheduledIntervalENUM.HOURS_4)
-					: new ScheduleTransition(DifficultyLevelENUM.HARD, ScheduledIntervalENUM.HOURS_2);
+					? new ScheduleTransition(DifficultyLevelENUM.MEDIUM, ScheduledIntervalENUM.HOURS_2)
+					: new ScheduleTransition(DifficultyLevelENUM.HARD, ScheduledIntervalENUM.HOURS_4);
 			case EASY -> correct
 					? new ScheduleTransition(DifficultyLevelENUM.EASY, ScheduledIntervalENUM.HOURS_36)
-					: new ScheduleTransition(DifficultyLevelENUM.MEDIUM, ScheduledIntervalENUM.HOURS_4);
+					: new ScheduleTransition(DifficultyLevelENUM.MEDIUM, ScheduledIntervalENUM.HOURS_2);
 		};
 	}
 
